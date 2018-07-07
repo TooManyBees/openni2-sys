@@ -4,5 +4,6 @@ version = "0.1.0"
 authors = ["Jesse Bees <jesse@toomanybees.com>"]
 build = "build.rs"
 links = "openni2"
+exclude = ["vendor/**/*"]
 
 [dependencies]
