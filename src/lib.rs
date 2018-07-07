@@ -8,7 +8,7 @@ pub const ONI_MAX_STR: usize = 256;
 pub const ONI_MAX_SENSORS: usize = 10;
 
 /// Possible failure values
-pub type OniStatus = u32;
+pub type OniStatus = i32;
 pub const ONI_STATUS_OK: OniStatus = 0;
 pub const ONI_STATUS_ERROR: OniStatus = 1;
 pub const ONI_STATUS_NOT_IMPLEMENTED: OniStatus = 2;
@@ -19,13 +19,13 @@ pub const ONI_STATUS_NO_DEVICE: OniStatus = 6;
 pub const ONI_STATUS_TIME_OUT: OniStatus = 102;
 
 /// The source of the stream
-pub type OniSensorType = u32;
+pub type OniSensorType = i32;
 pub const ONI_SENSOR_IR: OniSensorType = 1;
 pub const ONI_SENSOR_COLOR: OniSensorType = 2;
 pub const ONI_SENSOR_DEPTH: OniSensorType = 3;
 
 /// All available formats of the output of a stream
-pub type OniPixelFormat = u32;
+pub type OniPixelFormat = i32;
 pub const ONI_PIXEL_FORMAT_DEPTH_1_MM: OniPixelFormat = 100;
 pub const ONI_PIXEL_FORMAT_DEPTH_100_UM: OniPixelFormat = 101;
 pub const ONI_PIXEL_FORMAT_SHIFT_9_2: OniPixelFormat = 102;
@@ -37,13 +37,13 @@ pub const ONI_PIXEL_FORMAT_GRAY16: OniPixelFormat = 203;
 pub const ONI_PIXEL_FORMAT_JPEG: OniPixelFormat = 204;
 pub const ONI_PIXEL_FORMAT_YUYV: OniPixelFormat = 205;
 
-pub type OniDeviceState = u32;
+pub type OniDeviceState = i32;
 pub const ONI_DEVICE_STATE_OK: OniDeviceState = 0;
 pub const ONI_DEVICE_STATE_ERROR: OniDeviceState = 1;
 pub const ONI_DEVICE_STATE_NOT_READY: OniDeviceState = 2;
 pub const ONI_DEVICE_STATE_EOF: OniDeviceState = 3;
 
-pub type OniImageRegistrationMode = u32;
+pub type OniImageRegistrationMode = i32;
 pub const ONI_IMAGE_REGISTRATION_OFF: OniImageRegistrationMode = 0;
 pub const ONI_IMAGE_REGISTRATION_DEPTH_TO_COLOR : OniImageRegistrationMode = 1 ;
 
@@ -595,7 +595,7 @@ fn bindgen_test_layout_OniSeek() {
                        stringify!(stream)));
 }
 
-pub type OniDeviceProperty = u32;
+pub type OniDeviceProperty = i32;
 pub const ONI_DEVICE_PROPERTY_FIRMWARE_VERSION: OniDeviceProperty = 0;
 pub const ONI_DEVICE_PROPERTY_DRIVER_VERSION: OniDeviceProperty = 1;
 pub const ONI_DEVICE_PROPERTY_HARDWARE_VERSION: OniDeviceProperty = 2;
@@ -605,7 +605,7 @@ pub const ONI_DEVICE_PROPERTY_IMAGE_REGISTRATION: OniDeviceProperty = 5;
 pub const ONI_DEVICE_PROPERTY_PLAYBACK_SPEED: OniDeviceProperty = 100;
 pub const ONI_DEVICE_PROPERTY_PLAYBACK_REPEAT_ENABLED: OniDeviceProperty = 101;
 
-pub type OniStreamProperty = u32;
+pub type OniStreamProperty = i32;
 pub const ONI_STREAM_PROPERTY_CROPPING: OniStreamProperty = 0;
 pub const ONI_STREAM_PROPERTY_HORIZONTAL_FOV: OniStreamProperty = 1;
 pub const ONI_STREAM_PROPERTY_VERTICAL_FOV: OniStreamProperty = 2;
@@ -620,7 +620,7 @@ pub const ONI_STREAM_PROPERTY_AUTO_EXPOSURE: OniStreamProperty = 101;
 pub const ONI_STREAM_PROPERTY_EXPOSURE: OniStreamProperty = 102;
 pub const ONI_STREAM_PROPERTY_GAIN: OniStreamProperty = 103;
 
-pub type OniDeviceCommand = u32;
+pub type OniDeviceCommand = i32;
 pub const ONI_DEVICE_COMMAND_SEEK: OniDeviceCommand = 1;
 
 extern "C" {
