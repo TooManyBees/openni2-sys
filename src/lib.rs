@@ -4,6 +4,9 @@ use std::os::raw::{c_char, c_int, c_void};
 #[cfg(test)] use std::ptr;
 #[cfg(test)] use std::mem::{size_of, align_of};
 
+pub const ONI_MAX_STR: usize = 256;
+pub const ONI_MAX_SENSORS: usize = 10;
+
 /// Possible failure values
 pub type OniStatus = u32;
 pub const OniStatus_ONI_STATUS_OK: OniStatus = 0;
@@ -43,6 +46,10 @@ pub const OniDeviceState_ONI_DEVICE_STATE_EOF: OniDeviceState = 3;
 pub type OniImageRegistrationMode = u32;
 pub const OniImageRegistrationMode_ONI_IMAGE_REGISTRATION_OFF: OniImageRegistrationMode = 0;
 pub const OniImageRegistrationMode_ONI_IMAGE_REGISTRATION_DEPTH_TO_COLOR : OniImageRegistrationMode = 1 ;
+
+pub type _bindgen_ty_1 = i32;
+pub const ONI_TIMEOUT_NONE: _bindgen_ty_1 = 0;
+pub const ONI_TIMEOUT_FOREVER: _bindgen_ty_1 = -1;
 
 /// Basic types
 pub type OniBool = c_int;
@@ -98,6 +105,7 @@ fn bindgen_test_layout_OniVersion() {
                        "::",
                        stringify!(build)));
 }
+pub type OniHardwareVersion = c_int;
 /// Description of the output: format and resolution
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -193,9 +201,9 @@ fn bindgen_test_layout_OniSensorInfo() {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct OniDeviceInfo {
-    pub uri: [c_char; 256usize],
-    pub vendor: [c_char; 256usize],
-    pub name: [c_char; 256usize],
+    pub uri: [c_char; ONI_MAX_STR],
+    pub vendor: [c_char; ONI_MAX_STR],
+    pub name: [c_char; ONI_MAX_STR],
     pub usbVendorId: u16,
     pub usbProductId: u16,
 }
@@ -363,6 +371,8 @@ fn bindgen_test_layout_OniFrame() {
 pub type OniNewFrameCallback =
     ::std::option::Option<unsafe extern "C" fn(stream: OniStreamHandle,
                                                pCookie: *mut c_void)>;
+pub type OniGeneralCallback =
+    ::std::option::Option<unsafe extern "C" fn(pCookie: *mut c_void)>;
 pub type OniDeviceInfoCallback =
     ::std::option::Option<unsafe extern "C" fn(pInfo: *const OniDeviceInfo,
                                                pCookie: *mut c_void)>;
@@ -420,239 +430,462 @@ fn bindgen_test_layout_OniDeviceCallbacks() {
                        "::",
                        stringify!(deviceStateChanged)));
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct OniCropping {
+    pub enabled: c_int,
+    pub originX: c_int,
+    pub originY: c_int,
+    pub width: c_int,
+    pub height: c_int,
+}
+#[test]
+fn bindgen_test_layout_OniCropping() {
+    assert_eq!(size_of::<OniCropping>(),
+               20usize,
+               concat!("Size of: ", stringify!(OniCropping)));
+    assert_eq!(align_of::<OniCropping>(),
+               4usize,
+               concat!("Alignment of ", stringify!(OniCropping)));
+    assert_eq!(unsafe { &(*(ptr::null::<OniCropping>())).enabled as *const _ as usize },
+               0usize,
+               concat!("Offset of field: ",
+                       stringify!(OniCropping),
+                       "::",
+                       stringify!(enabled)));
+    assert_eq!(unsafe { &(*(ptr::null::<OniCropping>())).originX as *const _ as usize },
+               4usize,
+               concat!("Offset of field: ",
+                       stringify!(OniCropping),
+                       "::",
+                       stringify!(originX)));
+    assert_eq!(unsafe { &(*(ptr::null::<OniCropping>())).originY as *const _ as usize },
+               8usize,
+               concat!("Offset of field: ",
+                       stringify!(OniCropping),
+                       "::",
+                       stringify!(originY)));
+    assert_eq!(unsafe { &(*(ptr::null::<OniCropping>())).width as *const _ as usize },
+               12usize,
+               concat!("Offset of field: ",
+                       stringify!(OniCropping),
+                       "::",
+                       stringify!(width)));
+    assert_eq!(unsafe { &(*(ptr::null::<OniCropping>())).height as *const _ as usize },
+               16usize,
+               concat!("Offset of field: ",
+                       stringify!(OniCropping),
+                       "::",
+                       stringify!(height)));
+}
 /// Pixel type used to store depth images.
 pub type OniDepthPixel = u16;
+/// Pixel type used to store 16-bit grayscale images
+pub type OniGrayscale16Pixel = u16;
+/// Pixel type used to store 8-bit grayscale/bayer images
+pub type OniGrayscale8Pixel = u8;
+/// Holds the value of a single color image pixel in 24-bit RGB format.
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct OniRGB888Pixel {
+    pub r: u8,
+    pub g: u8,
+    pub b: u8,
+}
+#[test]
+fn bindgen_test_layout_OniRGB888Pixel() {
+    assert_eq!(size_of::<OniRGB888Pixel>(),
+               3usize,
+               concat!("Size of: ", stringify!(OniRGB888Pixel)));
+    assert_eq!(align_of::<OniRGB888Pixel>(),
+               1usize,
+               concat!("Alignment of ", stringify!(OniRGB888Pixel)));
+    assert_eq!(unsafe { &(*(ptr::null::<OniRGB888Pixel>())).r as *const _ as usize },
+               0usize,
+               concat!("Offset of field: ",
+                       stringify!(OniRGB888Pixel),
+                       "::",
+                       stringify!(r)));
+    assert_eq!(unsafe { &(*(ptr::null::<OniRGB888Pixel>())).g as *const _ as usize },
+               1usize,
+               concat!("Offset of field: ",
+                       stringify!(OniRGB888Pixel),
+                       "::",
+                       stringify!(g)));
+    assert_eq!(unsafe { &(*(ptr::null::<OniRGB888Pixel>())).b as *const _ as usize },
+               2usize,
+               concat!("Offset of field: ",
+                       stringify!(OniRGB888Pixel),
+                       "::",
+                       stringify!(b)));
+}
+/// Holds the value of two pixels in YUV422 format (Luminance/Chrominance,16-bits/pixel).
+/// The first pixel has the values y1, u, v.
+/// The second pixel has the values y2, u, v.
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct OniYUV422DoublePixel {
+    /// First chrominance value for two pixels, stored as blue luminance difference signal.
+    pub u: u8,
+    /// Overall luminance value of first pixel.
+    pub y1: u8,
+    /// Second chrominance value for two pixels, stored as red luminance difference signal.
+    pub v: u8,
+    /// Overall luminance value of second pixel.
+    pub y2: u8,
+}
+#[test]
+fn bindgen_test_layout_OniYUV422DoublePixel() {
+    assert_eq!(size_of::<OniYUV422DoublePixel>(),
+               4usize,
+               concat!("Size of: ", stringify!(OniYUV422DoublePixel)));
+    assert_eq!(align_of::<OniYUV422DoublePixel>(),
+               1usize,
+               concat!("Alignment of ", stringify!(OniYUV422DoublePixel)));
+    assert_eq!(unsafe { &(*(ptr::null::<OniYUV422DoublePixel>())).u as *const _ as usize },
+               0usize,
+               concat!("Offset of field: ",
+                       stringify!(OniYUV422DoublePixel),
+                       "::",
+                       stringify!(u)));
+    assert_eq!(unsafe { &(*(ptr::null::<OniYUV422DoublePixel>())).y1 as *const _ as usize },
+               1usize,
+               concat!("Offset of field: ",
+                       stringify!(OniYUV422DoublePixel),
+                       "::",
+                       stringify!(y1)));
+    assert_eq!(unsafe { &(*(ptr::null::<OniYUV422DoublePixel>())).v as *const _ as usize },
+               2usize,
+               concat!("Offset of field: ",
+                       stringify!(OniYUV422DoublePixel),
+                       "::",
+                       stringify!(v)));
+    assert_eq!(unsafe { &(*(ptr::null::<OniYUV422DoublePixel>())).y2 as *const _ as usize },
+               3usize,
+               concat!("Offset of field: ",
+                       stringify!(OniYUV422DoublePixel),
+                       "::",
+                       stringify!(y2)));
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct OniSeek {
+    pub frameIndex: c_int,
+    pub stream: OniStreamHandle,
+}
+#[test]
+fn bindgen_test_layout_OniSeek() {
+    assert_eq!(size_of::<OniSeek>(),
+               16usize,
+               concat!("Size of: ", stringify!(OniSeek)));
+    assert_eq!(align_of::<OniSeek>(),
+               8usize,
+               concat!("Alignment of ", stringify!(OniSeek)));
+    assert_eq!(unsafe { &(*(ptr::null::<OniSeek>())).frameIndex as *const _ as usize },
+               0usize,
+               concat!("Offset of field: ",
+                       stringify!(OniSeek),
+                       "::",
+                       stringify!(frameIndex)));
+    assert_eq!(unsafe { &(*(ptr::null::<OniSeek>())).stream as *const _ as usize },
+               8usize,
+               concat!("Offset of field: ",
+                       stringify!(OniSeek),
+                       "::",
+                       stringify!(stream)));
+}
+pub const ONI_DEVICE_PROPERTY_FIRMWARE_VERSION: _bindgen_ty_2 = 0;
+pub const ONI_DEVICE_PROPERTY_DRIVER_VERSION: _bindgen_ty_2 = 1;
+pub const ONI_DEVICE_PROPERTY_HARDWARE_VERSION: _bindgen_ty_2 = 2;
+pub const ONI_DEVICE_PROPERTY_SERIAL_NUMBER: _bindgen_ty_2 = 3;
+pub const ONI_DEVICE_PROPERTY_ERROR_STATE: _bindgen_ty_2 = 4;
+pub const ONI_DEVICE_PROPERTY_IMAGE_REGISTRATION: _bindgen_ty_2 = 5;
+pub const ONI_DEVICE_PROPERTY_PLAYBACK_SPEED: _bindgen_ty_2 = 100;
+pub const ONI_DEVICE_PROPERTY_PLAYBACK_REPEAT_ENABLED: _bindgen_ty_2 = 101;
+pub type _bindgen_ty_2 = u32;
+pub const ONI_STREAM_PROPERTY_CROPPING: _bindgen_ty_3 = 0;
+pub const ONI_STREAM_PROPERTY_HORIZONTAL_FOV: _bindgen_ty_3 = 1;
+pub const ONI_STREAM_PROPERTY_VERTICAL_FOV: _bindgen_ty_3 = 2;
+pub const ONI_STREAM_PROPERTY_VIDEO_MODE: _bindgen_ty_3 = 3;
+pub const ONI_STREAM_PROPERTY_MAX_VALUE: _bindgen_ty_3 = 4;
+pub const ONI_STREAM_PROPERTY_MIN_VALUE: _bindgen_ty_3 = 5;
+pub const ONI_STREAM_PROPERTY_STRIDE: _bindgen_ty_3 = 6;
+pub const ONI_STREAM_PROPERTY_MIRRORING: _bindgen_ty_3 = 7;
+pub const ONI_STREAM_PROPERTY_NUMBER_OF_FRAMES: _bindgen_ty_3 = 8;
+pub const ONI_STREAM_PROPERTY_AUTO_WHITE_BALANCE: _bindgen_ty_3 = 100;
+pub const ONI_STREAM_PROPERTY_AUTO_EXPOSURE: _bindgen_ty_3 = 101;
+pub const ONI_STREAM_PROPERTY_EXPOSURE: _bindgen_ty_3 = 102;
+pub const ONI_STREAM_PROPERTY_GAIN: _bindgen_ty_3 = 103;
+pub type _bindgen_ty_3 = u32;
+pub const ONI_DEVICE_COMMAND_SEEK: _bindgen_ty_4 = 1;
+pub type _bindgen_ty_4 = u32;
 extern "C" {
     /// Initialize OpenNI2. Use ONI_API_VERSION as the version.
     pub fn oniInitialize(apiVersion: c_int) -> OniStatus;
-
+}
+extern "C" {
     /// Shutdown OpenNI2
     pub fn oniShutdown();
-
+}
+extern "C" {
     /// Get the list of currently connected device.
     /// Each device is represented by its OniDeviceInfo.
     /// pDevices will be allocated inside.
     pub fn oniGetDeviceList(pDevices: *mut *mut OniDeviceInfo,
                             pNumDevices: *mut c_int)
                             -> OniStatus;
-
+}
+extern "C" {
     /// Release previously allocated device list
     pub fn oniReleaseDeviceList(pDevices: *mut OniDeviceInfo) -> OniStatus;
-
+}
+extern "C" {
     pub fn oniRegisterDeviceCallbacks(pCallbacks: *mut OniDeviceCallbacks,
                                       pCookie: *mut c_void,
                                       pHandle: *mut OniCallbackHandle)
                                       -> OniStatus;
-
+}
+extern "C" {
     pub fn oniUnregisterDeviceCallbacks(handle: OniCallbackHandle);
-
-
+}
+extern "C" {
     /// Wait for any of the streams to have a new frame
     pub fn oniWaitForAnyStream(pStreams: *mut OniStreamHandle,
                                numStreams: c_int,
                                pStreamIndex: *mut c_int,
                                timeout: c_int)
                                -> OniStatus;
-
-
+}
+extern "C" {
     /// Get the current version of OpenNI2
     pub fn oniGetVersion() -> OniVersion;
-
-
+}
+extern "C" {
     /// Translate from format to number of bytes per pixel. Will return 0 for formats in which the number of bytes per pixel isn't fixed.
     pub fn oniFormatBytesPerPixel(format: OniPixelFormat) -> c_int;
-
-
+}
+extern "C" {
     /// Get internal error
     pub fn oniGetExtendedError() -> *const c_char;
-
-
+}
+extern "C" {
     /// Open a device. Uri can be taken from the matching OniDeviceInfo.
     pub fn oniDeviceOpen(uri: *const c_char,
                          pDevice: *mut OniDeviceHandle)
                          -> OniStatus;
-
-
+}
+extern "C" {
     /// Close a device
     pub fn oniDeviceClose(device: OniDeviceHandle) -> OniStatus;
-
-
+}
+extern "C" {
     /// Get the possible configurations available for a specific source, or NULL if the source does not exist.
     pub fn oniDeviceGetSensorInfo(device: OniDeviceHandle,
                                   sensorType: OniSensorType)
                                   -> *const OniSensorInfo;
-
-
+}
+extern "C" {
     /// Get the OniDeviceInfo of a certain device.
     pub fn oniDeviceGetInfo(device: OniDeviceHandle, pInfo: *mut OniDeviceInfo) -> OniStatus;
-
-
+}
+extern "C" {
     /// Create a new stream in the device. The stream will originate from the source.
     pub fn oniDeviceCreateStream(device: OniDeviceHandle,
                                  sensorType: OniSensorType,
                                  pStream: *mut OniStreamHandle)
                                  -> OniStatus;
-
+}
+extern "C" {
     pub fn oniDeviceEnableDepthColorSync(device: OniDeviceHandle) -> OniStatus;
-
+}
+extern "C" {
     pub fn oniDeviceDisableDepthColorSync(device: OniDeviceHandle);
-
+}
+extern "C" {
     pub fn oniDeviceGetDepthColorSyncEnabled(device: OniDeviceHandle) -> OniBool;
-
+}
+extern "C" {
     /// Set property in the device. Use the properties listed in OniTypes.h: ONI_DEVICE_PROPERTY_..., or specific ones supplied by the device.
     pub fn oniDeviceSetProperty(device: OniDeviceHandle,
                                 propertyId: c_int,
                                 data: *const c_void,
                                 dataSize: c_int)
                                 -> OniStatus;
-
+}
+extern "C" {
     /// Get property in the device. Use the properties listed in OniTypes.h: ONI_DEVICE_PROPERTY_..., or specific ones supplied by the device.
     pub fn oniDeviceGetProperty(device: OniDeviceHandle,
                                 propertyId: c_int,
                                 data: *mut c_void,
                                 pDataSize: *mut c_int)
                                 -> OniStatus;
-
+}
+extern "C" {
     /// Check if the property is supported by the device. Use the properties listed in OniTypes.h: ONI_DEVICE_PROPERTY_..., or specific ones supplied by the device.
     pub fn oniDeviceIsPropertySupported(device: OniDeviceHandle,
                                         propertyId: c_int)
                                         -> OniBool;
-
+}
+extern "C" {
     /// Invoke an internal functionality of the device.
     pub fn oniDeviceInvoke(device: OniDeviceHandle,
                            commandId: c_int,
                            data: *mut c_void,
                            dataSize: c_int)
                            -> OniStatus;
-
+}
+extern "C" {
     /// Check if a command is supported, for invoke
     pub fn oniDeviceIsCommandSupported(device: OniDeviceHandle,
                                        commandId: c_int)
                                        -> OniBool;
-
+}
+extern "C" {
     pub fn oniDeviceIsImageRegistrationModeSupported(device: OniDeviceHandle,
                                                      mode: OniImageRegistrationMode)
                                                      -> OniBool;
-
+}
+extern "C" {
     /// @internal
     pub fn oniDeviceOpenEx(uri: *const c_char,
                            mode: *const c_char,
                            pDevice: *mut OniDeviceHandle)
                            -> OniStatus;
-
+}
+extern "C" {
     /// Destroy an existing stream
     pub fn oniStreamDestroy(stream: OniStreamHandle);
-
+}
+extern "C" {
     /// Get the OniSensorInfo of the certain stream.
     pub fn oniStreamGetSensorInfo(stream: OniStreamHandle) -> *const OniSensorInfo;
-
+}
+extern "C" {
     /// Start generating data from the stream.
     pub fn oniStreamStart(stream: OniStreamHandle) -> OniStatus;
-
+}
+extern "C" {
     /// Stop generating data from the stream.
     pub fn oniStreamStop(stream: OniStreamHandle);
-
+}
+extern "C" {
     /// Get the next frame from the stream. This function is blocking until there is a new frame from the stream. For timeout, use oniWaitForStreams() first
     pub fn oniStreamReadFrame(stream: OniStreamHandle, pFrame: *mut *mut OniFrame) -> OniStatus;
-
+}
+extern "C" {
     /// Register a callback to when the stream has a new frame.
     pub fn oniStreamRegisterNewFrameCallback(stream: OniStreamHandle,
                                              handler: OniNewFrameCallback,
                                              pCookie: *mut c_void,
                                              pHandle: *mut OniCallbackHandle)
                                              -> OniStatus;
-
+}
+extern "C" {
     /// Unregister a previously registered callback to when the stream has a new frame.
     pub fn oniStreamUnregisterNewFrameCallback(stream: OniStreamHandle,
                                                handle: OniCallbackHandle);
-
+}
+extern "C" {
     /// Set property in the stream. Use the properties listed in OniTypes.h: ONI_STREAM_PROPERTY_..., or specific ones supplied by the device for its streams.
     pub fn oniStreamSetProperty(stream: OniStreamHandle,
                                 propertyId: c_int,
                                 data: *const c_void,
                                 dataSize: c_int)
                                 -> OniStatus;
-
+}
+extern "C" {
     /// Get property in the stream. Use the properties listed in OniTypes.h: ONI_STREAM_PROPERTY_..., or specific ones supplied by the device for its streams.
     pub fn oniStreamGetProperty(stream: OniStreamHandle,
                                 propertyId: c_int,
                                 data: *mut c_void,
                                 pDataSize: *mut c_int)
                                 -> OniStatus;
-
+}
+extern "C" {
     /// Check if the property is supported the stream. Use the properties listed in OniTypes.h: ONI_STREAM_PROPERTY_..., or specific ones supplied by the device for its streams.
     pub fn oniStreamIsPropertySupported(stream: OniStreamHandle,
                                         propertyId: c_int)
                                         -> OniBool;
-
+}
+extern "C" {
     /// Invoke an internal functionality of the stream.
     pub fn oniStreamInvoke(stream: OniStreamHandle,
                            commandId: c_int,
                            data: *mut c_void,
                            dataSize: c_int)
                            -> OniStatus;
-
+}
+extern "C" {
     /// Check if a command is supported, for invoke
     pub fn oniStreamIsCommandSupported(stream: OniStreamHandle,
                                        commandId: c_int)
                                        -> OniBool;
-
+}
+extern "C" {
     /// Sets the stream buffer allocation functions. Note that this function may only be called while stream is not started.
     pub fn oniStreamSetFrameBuffersAllocator(stream: OniStreamHandle,
                                              alloc: OniFrameAllocBufferCallback,
                                              free: OniFrameFreeBufferCallback,
                                              pCookie: *mut c_void)
                                              -> OniStatus;
-
+}
+extern "C" {
     ///
     /// ** Mark another user of the frame. */
     pub fn oniFrameAddRef(pFrame: *mut OniFrame);
-
+}
+extern "C" {
     /// Mark that the frame is no longer needed.
     pub fn oniFrameRelease(pFrame: *mut OniFrame);
-
+}
+extern "C" {
     /// Creates a recorder that records to a file.
-    /// @param  [in]    fileName    The name of the file that will contain the recording.
-    /// @param  [out]   pRecorder   Points to the handle to the newly created recorder.
+    /// @param	[in]	fileName	The name of the file that will contain the recording.
+    /// @param	[out]	pRecorder	Points to the handle to the newly created recorder.
     /// @retval ONI_STATUS_OK Upon successful completion.
     /// @retval ONI_STATUS_ERROR Upon any kind of failure.
     pub fn oniCreateRecorder(fileName: *const c_char,
                              pRecorder: *mut OniRecorderHandle)
                              -> OniStatus;
-
+}
+extern "C" {
     /// Attaches a stream to a recorder. The amount of attached streams is virtually
     /// infinite. You cannot attach a stream after you have started a recording, if
     /// you do: an error will be returned by oniRecorderAttachStream.
-    /// @param  [in]    recorder                The handle to the recorder.
-    /// @param  [in]    stream                  The handle to the stream.
-    /// @param  [in]    allowLossyCompression   Allows/denies lossy compression
+    /// @param	[in]	recorder				The handle to the recorder.
+    /// @param	[in]	stream					The handle to the stream.
+    /// @param	[in]	allowLossyCompression	Allows/denies lossy compression
     /// @retval ONI_STATUS_OK Upon successful completion.
     /// @retval ONI_STATUS_ERROR Upon any kind of failure.
     pub fn oniRecorderAttachStream(recorder: OniRecorderHandle,
                                    stream: OniStreamHandle,
                                    allowLossyCompression: OniBool)
                                    -> OniStatus;
-
+}
+extern "C" {
     /// Starts recording. There must be at least one stream attached to the recorder,
     /// if not: oniRecorderStart will return an error.
     /// @param[in] recorder The handle to the recorder.
     /// @retval ONI_STATUS_OK Upon successful completion.
     /// @retval ONI_STATUS_ERROR Upon any kind of failure.
     pub fn oniRecorderStart(recorder: OniRecorderHandle) -> OniStatus;
-
+}
+extern "C" {
     /// Stops recording. You can resume recording via oniRecorderStart.
     /// @param[in] recorder The handle to the recorder.
     /// @retval ONI_STATUS_OK Upon successful completion.
     /// @retval ONI_STATUS_ERROR Upon any kind of failure.
     pub fn oniRecorderStop(recorder: OniRecorderHandle);
-
+}
+extern "C" {
     /// Stops recording if needed, and destroys a recorder.
-    /// @param  [in,out]    recorder    The handle to the recorder, the handle will be
+    /// @param	[in,out]	recorder	The handle to the recorder, the handle will be
     /// invalidated (nullified) when the function returns.
     /// @retval ONI_STATUS_OK Upon successful completion.
     /// @retval ONI_STATUS_ERROR Upon any kind of failure.
     pub fn oniRecorderDestroy(pRecorder: *mut OniRecorderHandle) -> OniStatus;
-
+}
+extern "C" {
     pub fn oniCoordinateConverterDepthToWorld(depthStream: OniStreamHandle,
                                               depthX: f32,
                                               depthY: f32,
@@ -661,7 +894,8 @@ extern "C" {
                                               pWorldY: *mut f32,
                                               pWorldZ: *mut f32)
                                               -> OniStatus;
-
+}
+extern "C" {
     pub fn oniCoordinateConverterWorldToDepth(depthStream: OniStreamHandle,
                                               worldX: f32,
                                               worldY: f32,
@@ -670,7 +904,8 @@ extern "C" {
                                               pDepthY: *mut f32,
                                               pDepthZ: *mut f32)
                                               -> OniStatus;
-
+}
+extern "C" {
     pub fn oniCoordinateConverterDepthToColor(depthStream: OniStreamHandle,
                                               colorStream: OniStreamHandle,
                                               depthX: c_int,
@@ -679,45 +914,50 @@ extern "C" {
                                               pColorX: *mut c_int,
                                               pColorY: *mut c_int)
                                               -> OniStatus;
-
+}
+extern "C" {
     /// Change the log output folder
     ///
-    /// @param const char * strOutputFolder [in]    path to the desirebale folder
+    /// @param const char * strOutputFolder	[in]	path to the desirebale folder
     ///
     /// @retval ONI_STATUS_OK Upon successful completion.
     /// @retval ONI_STATUS_ERROR Upon any kind of failure.
     pub fn oniSetLogOutputFolder(strOutputFolder: *const c_char) -> OniStatus;
-
+}
+extern "C" {
     /// Get the current log file name
     ///
-    /// @param  char * strFileName  [out]   hold the returned file name
-    /// @param  int nBufferSize [in]    size of strFileName
+    /// @param	char * strFileName	[out]	hold the returned file name
+    /// @param	int nBufferSize	[in]	size of strFileName
     ///
     /// @retval ONI_STATUS_OK Upon successful completion.
     /// @retval ONI_STATUS_ERROR Upon any kind of failure.
     pub fn oniGetLogFileName(strFileName: *mut c_char,
                              nBufferSize: c_int)
                              -> OniStatus;
-
+}
+extern "C" {
     /// Set the Minimum severity for log produce
     ///
-    /// @param  const char * strMask    [in]    Name of the logger
+    /// @param	const char * strMask	[in]	Name of the logger
     ///
     /// @retval ONI_STATUS_OK Upon successful completion.
     /// @retval ONI_STATUS_ERROR Upon any kind of failure.
     pub fn oniSetLogMinSeverity(nMinSeverity: c_int) -> OniStatus;
-
+}
+extern "C" {
     /// Configures if log entries will be printed to console.
     ///
-    /// @param  OniBool bConsoleOutput  [in]    TRUE to print log entries to console, FALSE otherwise.
+    /// @param	OniBool bConsoleOutput	[in]	TRUE to print log entries to console, FALSE otherwise.
     ///
     /// @retval ONI_STATUS_OK Upon successful completion.
     /// @retval ONI_STATUS_ERROR Upon any kind of failure.
     pub fn oniSetLogConsoleOutput(bConsoleOutput: OniBool) -> OniStatus;
-
+}
+extern "C" {
     /// Configures if log entries will be printed to a log file.
     ///
-    /// @param  OniBool bFileOutput [in]    TRUE to print log entries to the file, FALSE otherwise.
+    /// @param	OniBool bFileOutput	[in]	TRUE to print log entries to the file, FALSE otherwise.
     ///
     /// @retval ONI_STATUS_OK Upon successful completion.
     /// @retval ONI_STATUS_ERROR Upon any kind of failure.

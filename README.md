@@ -2,6 +2,10 @@
 
 Rust bindings for [OpenNI2](https://github.com/occipital/OpenNI2).
 
+The reference vendor files were built with bindgen using this command, with a few additional edits:
+
+`bindgen vendor/OniCAPI.h -o src/lib.rs --whitelist-function oni.* --whitelist-type Oni.* --whitelist-var ONI_.*`
+
 # Compilation
 
 OpenNI2 usually expects to be dynamically linked, and requires env variables
