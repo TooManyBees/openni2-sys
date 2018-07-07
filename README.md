@@ -17,3 +17,12 @@ much more likely will require them to be in the same directory as the executable
 
 This will make running tests/executables with Cargo a lot more annoying, as you'll
 have to copy the libraries into the correct `target` directory. Blah.
+
+# LICENSE
+
+These bindings are distributed under the MIT license, which I don't exactly
+know what it means, but was recommended and idgaf.
+
+This repository contains headers for OpenNI2 with a Primsense Ltd. copyright,
+but they exist for reference and are not part of the compiled crate that's
+distributed through Crates.io.

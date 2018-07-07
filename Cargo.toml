@@ -5,5 +5,11 @@ authors = ["Jesse Bees <jesse@toomanybees.com>"]
 build = "build.rs"
 links = "openni2"
 exclude = ["vendor/**/*"]
+description = "Rust bindings for OpenNI2"
+repository = "https://github.com/TooManyBees/openni2-sys"
+readme = "README.md"
+keywords = ["openni2", "c-api", "c-bindings"]
+categories = ["api-bindings", "multimedia::video"]
+license = "MIT"
 
 [dependencies]
