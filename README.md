@@ -7,16 +7,19 @@ Rust bindings for [OpenNI2](https://github.com/occipital/OpenNI2).
 OpenNI2 usually expects to be dynamically linked, and requires env variables
 to indicate where the libraries are.
 
-OSX/Linux wants an env var to indicate the location of `libOpenNI2.dylib`/`libOpenNI2.so` (the `OPENNI2_REDIST` env var, per OpenNI2's installation instructions), while Windows wants to know the directory containing `OpenNI2.lib` (the `OPENNI2_LIB` or `OPENNI2_LIB64` env vars, per the same instructions).
+The build script first checks the env vars `OPENNI2_LIB`/`OPENNI2_LIB64`
+which (per the OpenNI2 installation instructions) is the location of `OpenNI2.lib`
+on Windows. Then it checks `OPENNI2_REDIST`/`OPENNI2_REDIST64` which is the location
+of `libOpenNI2.dylib` or `libOpenNI2.so` on OSX or Linux.
+
+The env var `OPENNI2_LIB(64)` only needs to be set on Windows, so there should not
+be any conflicts from the build script checking all four possible variables.
 
 # Runtime considerations
 
-Depending on your installation of OpenNI2, executables that use it *might*
-correctly locate the libraries in their install location (`OPENNI2_REDIST`) but
-much more likely will require them to be in the same directory as the executable.
-
-This will make running tests/executables with Cargo a lot more annoying, as you'll
-have to copy the libraries into the correct `target` directory. Blah.
+The location in `OPENNI2_REDIST(64)` should be added to your `PATH`, or else
+copy `OpenNI2.dll`, `libOpenNI2.dylib`, or `libOpenNI2.so` to the executable's
+directory.
 
 # LICENSE
 
