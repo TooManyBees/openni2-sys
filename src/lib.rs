@@ -1,6 +1,8 @@
 #![allow(non_camel_case_types, non_snake_case, non_upper_case_globals)]
 
 use std::os::raw::{c_char, c_int, c_void};
+#[cfg(test)] use std::ptr;
+#[cfg(test)] use std::mem::{size_of, align_of};
 
 /// Possible failure values
 pub type OniStatus = u32;
@@ -65,31 +67,31 @@ pub struct OniVersion {
 }
 #[test]
 fn bindgen_test_layout_OniVersion() {
-    assert_eq!(::std::mem::size_of::<OniVersion>(),
+    assert_eq!(size_of::<OniVersion>(),
                16usize,
                concat!("Size of: ", stringify!(OniVersion)));
-    assert_eq!(::std::mem::align_of::<OniVersion>(),
+    assert_eq!(align_of::<OniVersion>(),
                4usize,
                concat!("Alignment of ", stringify!(OniVersion)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniVersion>())).major as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniVersion>())).major as *const _ as usize },
                0usize,
                concat!("Offset of field: ",
                        stringify!(OniVersion),
                        "::",
                        stringify!(major)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniVersion>())).minor as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniVersion>())).minor as *const _ as usize },
                4usize,
                concat!("Offset of field: ",
                        stringify!(OniVersion),
                        "::",
                        stringify!(minor)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniVersion>())).maintenance as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniVersion>())).maintenance as *const _ as usize },
                8usize,
                concat!("Offset of field: ",
                        stringify!(OniVersion),
                        "::",
                        stringify!(maintenance)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniVersion>())).build as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniVersion>())).build as *const _ as usize },
                12usize,
                concat!("Offset of field: ",
                        stringify!(OniVersion),
@@ -107,14 +109,14 @@ pub struct OniVideoMode {
 }
 #[test]
 fn bindgen_test_layout_OniVideoMode() {
-    assert_eq!(::std::mem::size_of::<OniVideoMode>(),
+    assert_eq!(size_of::<OniVideoMode>(),
                16usize,
                concat!("Size of: ", stringify!(OniVideoMode)));
-    assert_eq!(::std::mem::align_of::<OniVideoMode>(),
+    assert_eq!(align_of::<OniVideoMode>(),
                4usize,
                concat!("Alignment of ", stringify!(OniVideoMode)));
     assert_eq!(unsafe {
-                   &(*(::std::ptr::null::<OniVideoMode>())).pixelFormat as *const _ as usize
+                   &(*(ptr::null::<OniVideoMode>())).pixelFormat as *const _ as usize
                },
                0usize,
                concat!("Offset of field: ",
@@ -122,7 +124,7 @@ fn bindgen_test_layout_OniVideoMode() {
                        "::",
                        stringify!(pixelFormat)));
     assert_eq!(unsafe {
-                   &(*(::std::ptr::null::<OniVideoMode>())).resolutionX as *const _ as usize
+                   &(*(ptr::null::<OniVideoMode>())).resolutionX as *const _ as usize
                },
                4usize,
                concat!("Offset of field: ",
@@ -130,14 +132,14 @@ fn bindgen_test_layout_OniVideoMode() {
                        "::",
                        stringify!(resolutionX)));
     assert_eq!(unsafe {
-                   &(*(::std::ptr::null::<OniVideoMode>())).resolutionY as *const _ as usize
+                   &(*(ptr::null::<OniVideoMode>())).resolutionY as *const _ as usize
                },
                8usize,
                concat!("Offset of field: ",
                        stringify!(OniVideoMode),
                        "::",
                        stringify!(resolutionY)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniVideoMode>())).fps as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniVideoMode>())).fps as *const _ as usize },
                12usize,
                concat!("Offset of field: ",
                        stringify!(OniVideoMode),
@@ -154,14 +156,14 @@ pub struct OniSensorInfo {
 }
 #[test]
 fn bindgen_test_layout_OniSensorInfo() {
-    assert_eq!(::std::mem::size_of::<OniSensorInfo>(),
+    assert_eq!(size_of::<OniSensorInfo>(),
                16usize,
                concat!("Size of: ", stringify!(OniSensorInfo)));
-    assert_eq!(::std::mem::align_of::<OniSensorInfo>(),
+    assert_eq!(align_of::<OniSensorInfo>(),
                8usize,
                concat!("Alignment of ", stringify!(OniSensorInfo)));
     assert_eq!(unsafe {
-                   &(*(::std::ptr::null::<OniSensorInfo>())).sensorType as *const _ as usize
+                   &(*(ptr::null::<OniSensorInfo>())).sensorType as *const _ as usize
                },
                0usize,
                concat!("Offset of field: ",
@@ -169,7 +171,7 @@ fn bindgen_test_layout_OniSensorInfo() {
                        "::",
                        stringify!(sensorType)));
     assert_eq!(unsafe {
-                   &(*(::std::ptr::null::<OniSensorInfo>())).numSupportedVideoModes as *const _ as
+                   &(*(ptr::null::<OniSensorInfo>())).numSupportedVideoModes as *const _ as
                    usize
                },
                4usize,
@@ -178,7 +180,7 @@ fn bindgen_test_layout_OniSensorInfo() {
                        "::",
                        stringify!(numSupportedVideoModes)));
     assert_eq!(unsafe {
-                   &(*(::std::ptr::null::<OniSensorInfo>())).pSupportedVideoModes as *const _ as
+                   &(*(ptr::null::<OniSensorInfo>())).pSupportedVideoModes as *const _ as
                    usize
                },
                8usize,
@@ -199,32 +201,32 @@ pub struct OniDeviceInfo {
 }
 #[test]
 fn bindgen_test_layout_OniDeviceInfo() {
-    assert_eq!(::std::mem::size_of::<OniDeviceInfo>(),
+    assert_eq!(size_of::<OniDeviceInfo>(),
                772usize,
                concat!("Size of: ", stringify!(OniDeviceInfo)));
-    assert_eq!(::std::mem::align_of::<OniDeviceInfo>(),
+    assert_eq!(align_of::<OniDeviceInfo>(),
                2usize,
                concat!("Alignment of ", stringify!(OniDeviceInfo)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniDeviceInfo>())).uri as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniDeviceInfo>())).uri as *const _ as usize },
                0usize,
                concat!("Offset of field: ",
                        stringify!(OniDeviceInfo),
                        "::",
                        stringify!(uri)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniDeviceInfo>())).vendor as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniDeviceInfo>())).vendor as *const _ as usize },
                256usize,
                concat!("Offset of field: ",
                        stringify!(OniDeviceInfo),
                        "::",
                        stringify!(vendor)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniDeviceInfo>())).name as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniDeviceInfo>())).name as *const _ as usize },
                512usize,
                concat!("Offset of field: ",
                        stringify!(OniDeviceInfo),
                        "::",
                        stringify!(name)));
     assert_eq!(unsafe {
-                   &(*(::std::ptr::null::<OniDeviceInfo>())).usbVendorId as *const _ as usize
+                   &(*(ptr::null::<OniDeviceInfo>())).usbVendorId as *const _ as usize
                },
                768usize,
                concat!("Offset of field: ",
@@ -232,7 +234,7 @@ fn bindgen_test_layout_OniDeviceInfo() {
                        "::",
                        stringify!(usbVendorId)));
     assert_eq!(unsafe {
-                   &(*(::std::ptr::null::<OniDeviceInfo>())).usbProductId as *const _ as usize
+                   &(*(ptr::null::<OniDeviceInfo>())).usbProductId as *const _ as usize
                },
                770usize,
                concat!("Offset of field: ",
@@ -277,81 +279,81 @@ pub struct OniFrame {
 }
 #[test]
 fn bindgen_test_layout_OniFrame() {
-    assert_eq!(::std::mem::size_of::<OniFrame>(),
+    assert_eq!(size_of::<OniFrame>(),
                80usize,
                concat!("Size of: ", stringify!(OniFrame)));
-    assert_eq!(::std::mem::align_of::<OniFrame>(),
+    assert_eq!(align_of::<OniFrame>(),
                8usize,
                concat!("Alignment of ", stringify!(OniFrame)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniFrame>())).dataSize as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniFrame>())).dataSize as *const _ as usize },
                0usize,
                concat!("Offset of field: ",
                        stringify!(OniFrame),
                        "::",
                        stringify!(dataSize)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniFrame>())).data as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniFrame>())).data as *const _ as usize },
                8usize,
                concat!("Offset of field: ",
                        stringify!(OniFrame),
                        "::",
                        stringify!(data)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniFrame>())).sensorType as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniFrame>())).sensorType as *const _ as usize },
                16usize,
                concat!("Offset of field: ",
                        stringify!(OniFrame),
                        "::",
                        stringify!(sensorType)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniFrame>())).timestamp as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniFrame>())).timestamp as *const _ as usize },
                24usize,
                concat!("Offset of field: ",
                        stringify!(OniFrame),
                        "::",
                        stringify!(timestamp)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniFrame>())).frameIndex as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniFrame>())).frameIndex as *const _ as usize },
                32usize,
                concat!("Offset of field: ",
                        stringify!(OniFrame),
                        "::",
                        stringify!(frameIndex)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniFrame>())).width as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniFrame>())).width as *const _ as usize },
                36usize,
                concat!("Offset of field: ",
                        stringify!(OniFrame),
                        "::",
                        stringify!(width)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniFrame>())).height as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniFrame>())).height as *const _ as usize },
                40usize,
                concat!("Offset of field: ",
                        stringify!(OniFrame),
                        "::",
                        stringify!(height)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniFrame>())).videoMode as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniFrame>())).videoMode as *const _ as usize },
                44usize,
                concat!("Offset of field: ",
                        stringify!(OniFrame),
                        "::",
                        stringify!(videoMode)));
     assert_eq!(unsafe {
-                   &(*(::std::ptr::null::<OniFrame>())).croppingEnabled as *const _ as usize
+                   &(*(ptr::null::<OniFrame>())).croppingEnabled as *const _ as usize
                },
                60usize,
                concat!("Offset of field: ",
                        stringify!(OniFrame),
                        "::",
                        stringify!(croppingEnabled)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniFrame>())).cropOriginX as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniFrame>())).cropOriginX as *const _ as usize },
                64usize,
                concat!("Offset of field: ",
                        stringify!(OniFrame),
                        "::",
                        stringify!(cropOriginX)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniFrame>())).cropOriginY as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniFrame>())).cropOriginY as *const _ as usize },
                68usize,
                concat!("Offset of field: ",
                        stringify!(OniFrame),
                        "::",
                        stringify!(cropOriginY)));
-    assert_eq!(unsafe { &(*(::std::ptr::null::<OniFrame>())).stride as *const _ as usize },
+    assert_eq!(unsafe { &(*(ptr::null::<OniFrame>())).stride as *const _ as usize },
                72usize,
                concat!("Offset of field: ",
                        stringify!(OniFrame),
@@ -384,14 +386,14 @@ pub struct OniDeviceCallbacks {
 }
 #[test]
 fn bindgen_test_layout_OniDeviceCallbacks() {
-    assert_eq!(::std::mem::size_of::<OniDeviceCallbacks>(),
+    assert_eq!(size_of::<OniDeviceCallbacks>(),
                24usize,
                concat!("Size of: ", stringify!(OniDeviceCallbacks)));
-    assert_eq!(::std::mem::align_of::<OniDeviceCallbacks>(),
+    assert_eq!(align_of::<OniDeviceCallbacks>(),
                8usize,
                concat!("Alignment of ", stringify!(OniDeviceCallbacks)));
     assert_eq!(unsafe {
-                   &(*(::std::ptr::null::<OniDeviceCallbacks>())).deviceConnected as *const _ as
+                   &(*(ptr::null::<OniDeviceCallbacks>())).deviceConnected as *const _ as
                    usize
                },
                0usize,
@@ -400,7 +402,7 @@ fn bindgen_test_layout_OniDeviceCallbacks() {
                        "::",
                        stringify!(deviceConnected)));
     assert_eq!(unsafe {
-                   &(*(::std::ptr::null::<OniDeviceCallbacks>())).deviceDisconnected as *const _ as
+                   &(*(ptr::null::<OniDeviceCallbacks>())).deviceDisconnected as *const _ as
                    usize
                },
                8usize,
@@ -409,7 +411,7 @@ fn bindgen_test_layout_OniDeviceCallbacks() {
                        "::",
                        stringify!(deviceDisconnected)));
     assert_eq!(unsafe {
-                   &(*(::std::ptr::null::<OniDeviceCallbacks>())).deviceStateChanged as *const _ as
+                   &(*(ptr::null::<OniDeviceCallbacks>())).deviceStateChanged as *const _ as
                    usize
                },
                16usize,
@@ -773,4 +775,18 @@ extern "C" {
     /// @retval ONI_STATUS_ERROR Upon any kind of failure.
     #[link_name = "\u{1}_oniSetLogFileOutput"]
     pub fn oniSetLogFileOutput(bFileOutput: OniBool) -> OniStatus;
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_oniGetVersion() {
+        let version: OniVersion = unsafe { oniGetVersion() };
+        assert_eq!(version.major, 2);
+        assert_eq!(version.minor, 2);
+        assert_eq!(version.maintenance, 0);
+        assert_eq!(version.build, 33);
+    }
 }
