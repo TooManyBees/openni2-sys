@@ -11,19 +11,19 @@ The reference vendor files were built with bindgen using this command, with a fe
 OpenNI2 usually expects to be dynamically linked, and requires env variables
 to indicate where the libraries are.
 
-The build script first checks the env vars `OPENNI2_LIB`/`OPENNI2_LIB64`
-which (per the OpenNI2 installation instructions) is the location of `OpenNI2.lib`
-on Windows. Then it checks `OPENNI2_REDIST`/`OPENNI2_REDIST64` which is the location
-of `libOpenNI2.dylib` or `libOpenNI2.so` on OSX or Linux.
+When building on Windows, the build script checks the presence of the env vars
+`OPENNI2_LIB` and `OPENNI2_LIB64` (per the OpenNI2 installation instructions) is the location of `OpenNI2.lib` on Windows. On other platforms, it checks
+`OPENNI2_REDIST` and `OPENNI2_REDIST64`, which should be the location of
+`libOpenNI2.dylib` or `libOpenNI2.so` on OSX or Linux.
 
-The env var `OPENNI2_LIB(64)` only needs to be set on Windows, so there should not
-be any conflicts from the build script checking all four possible variables.
+(A Windows OpenNI2 installation should also have the `OPENNI2_REDIST(64)` env
+var set, but it's not the location needed to correctly link.)
 
 # Runtime considerations
 
-The location in `OPENNI2_REDIST(64)` should be added to your `PATH`, or else
-copy `OpenNI2.dll`, `libOpenNI2.dylib`, or `libOpenNI2.so` to the executable's
-directory.
+Different compilations of OpenNI2 require its runtime libraries to be in
+different places. Usually, adding `OPENNI2_REDIST(64)` to your `PATH` is
+enough. Otherwise, copy `OpenNI2.dll`, `libOpenNI2.dylib`, or `libOpenNI2.so` to the executable's directory.
 
 # LICENSE
 
