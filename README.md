@@ -21,9 +21,16 @@ var set, but it's not the location needed to correctly link.)
 
 # Runtime considerations
 
-Different compilations of OpenNI2 require its runtime libraries to be in
-different places. Usually, adding `OPENNI2_REDIST(64)` to your `PATH` is
-enough. Otherwise, copy `OpenNI2.dll`, `libOpenNI2.dylib`, or `libOpenNI2.so` to the executable's directory.
+For OSX, add `OPENNI2_REDIST(64)` (the location of `libOpenNI2.dylib`)
+to your `DYLD_LIBRARY_PATH` env var.
+
+For Linux, add `OPENNI2_REDIST(64)` (the location of `libOpenNI2.so`)
+to your `LD_LIBRARY_PATH` env var.
+
+For Windows, add `OPENNI2_REDIST(64)` to your `PATH`.
+
+Otherwise to avoid using shared locations, copy `OpenNI2.dll`,
+`libOpenNI2.dylib`, or `libOpenNI2.so` to the executable's directory.
 
 # LICENSE
 
