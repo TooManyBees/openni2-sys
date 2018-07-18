@@ -7,6 +7,7 @@ links = "openni2"
 exclude = ["vendor/**/*"]
 description = "Rust bindings for OpenNI2"
 repository = "https://github.com/TooManyBees/openni2-sys"
+documentation = "https://docs.rs/openni2-sys"
 readme = "README.md"
 keywords = ["openni2", "c-api", "c-bindings", "natural-interaction"]
 categories = ["api-bindings", "multimedia::video"]
