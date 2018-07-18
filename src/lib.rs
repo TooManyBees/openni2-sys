@@ -9,13 +9,18 @@ pub const ONI_MAX_SENSORS: usize = 10;
 
 /// Possible failure values
 pub type OniStatus = i32;
+/// Status: Success
 pub const ONI_STATUS_OK: OniStatus = 0;
+/// Status: Error. Specific message retrievable with `oniGetExtendedError`.
 pub const ONI_STATUS_ERROR: OniStatus = 1;
 pub const ONI_STATUS_NOT_IMPLEMENTED: OniStatus = 2;
 pub const ONI_STATUS_NOT_SUPPORTED: OniStatus = 3;
 pub const ONI_STATUS_BAD_PARAMETER: OniStatus = 4;
+/// Status: Operation invalid because of current state of device/stream.
 pub const ONI_STATUS_OUT_OF_FLOW: OniStatus = 5;
+/// Status: No device found.
 pub const ONI_STATUS_NO_DEVICE: OniStatus = 6;
+/// Status: Timeout expired waiting for a stream to become ready.
 pub const ONI_STATUS_TIME_OUT: OniStatus = 102;
 
 /// The source of the stream
@@ -43,6 +48,7 @@ pub const ONI_DEVICE_STATE_ERROR: OniDeviceState = 1;
 pub const ONI_DEVICE_STATE_NOT_READY: OniDeviceState = 2;
 pub const ONI_DEVICE_STATE_EOF: OniDeviceState = 3;
 
+/// How the device automatically aligns the dimensions of different streams
 pub type OniImageRegistrationMode = i32;
 pub const ONI_IMAGE_REGISTRATION_OFF: OniImageRegistrationMode = 0;
 pub const ONI_IMAGE_REGISTRATION_DEPTH_TO_COLOR : OniImageRegistrationMode = 1 ;
@@ -51,15 +57,15 @@ pub type OniTimeout = i32;
 pub const ONI_TIMEOUT_NONE: OniTimeout = 0;
 pub const ONI_TIMEOUT_FOREVER: OniTimeout = -1;
 
-/// Basic types
 pub type OniBool = c_int;
+#[doc(hidden)]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct OniCallbackHandleImpl {
     _unused: [u8; 0],
 }
 pub type OniCallbackHandle = *mut OniCallbackHandleImpl;
-/// Holds an OpenNI version number, which consists of four separate numbers in the format: @c major.minor.maintenance.build. For example: 2.0.0.20.
+/// Holds an OpenNI version number, which consists of four separate numbers in the format: @c major.minor.maintenance.build. For example: `2.0.0.20`.
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct OniVersion {
@@ -250,18 +256,21 @@ fn bindgen_test_layout_OniDeviceInfo() {
                        "::",
                        stringify!(usbProductId)));
 }
+#[doc(hidden)]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _OniDevice {
     _unused: [u8; 0],
 }
 pub type OniDeviceHandle = *mut _OniDevice;
+#[doc(hidden)]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _OniStream {
     _unused: [u8; 0],
 }
 pub type OniStreamHandle = *mut _OniStream;
+#[doc(hidden)]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _OniRecorder {
@@ -387,6 +396,8 @@ pub type OniFrameAllocBufferCallback =
 pub type OniFrameFreeBufferCallback =
     ::std::option::Option<unsafe extern "C" fn(data: *mut c_void,
                                                pCookie: *mut c_void)>;
+/// Holds functions to register and unregister with `oniRegisterDeviceCallbacks`
+/// and `oniUnregisterDeviceCallbacks`
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct OniDeviceCallbacks {
@@ -430,6 +441,7 @@ fn bindgen_test_layout_OniDeviceCallbacks() {
                        "::",
                        stringify!(deviceStateChanged)));
 }
+/// Dimensions of the current crop, with respect to the source dimensions.
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct OniCropping {
@@ -520,8 +532,8 @@ fn bindgen_test_layout_OniRGB888Pixel() {
                        stringify!(b)));
 }
 /// Holds the value of two pixels in YUV422 format (Luminance/Chrominance,16-bits/pixel).
-/// The first pixel has the values y1, u, v.
-/// The second pixel has the values y2, u, v.
+/// The first pixel has the values `y1`, `u`, `v`.
+/// The second pixel has the values `y2`, `u`, `v`.
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct OniYUV422DoublePixel {
@@ -624,7 +636,9 @@ pub type OniDeviceCommand = i32;
 pub const ONI_DEVICE_COMMAND_SEEK: OniDeviceCommand = 1;
 
 extern "C" {
-    /// Initialize OpenNI2. Use ONI_API_VERSION as the version.
+    /// Initialize OpenNI2. Use `major_version * 1000 + minor_version` as `apiVersion`.
+    ///
+    /// In some OpenNI2 implementations, `apiVersion` is ignored.
     pub fn oniInitialize(apiVersion: c_int) -> OniStatus;
 }
 extern "C" {
@@ -644,12 +658,15 @@ extern "C" {
     pub fn oniReleaseDeviceList(pDevices: *mut OniDeviceInfo) -> OniStatus;
 }
 extern "C" {
+    /// Register callbacks to fire when a device is connected, disconnected, or
+    /// changes state.
     pub fn oniRegisterDeviceCallbacks(pCallbacks: *mut OniDeviceCallbacks,
                                       pCookie: *mut c_void,
                                       pHandle: *mut OniCallbackHandle)
                                       -> OniStatus;
 }
 extern "C" {
+    // Unregister previously registered device callbacks.
     pub fn oniUnregisterDeviceCallbacks(handle: OniCallbackHandle);
 }
 extern "C" {
@@ -666,6 +683,9 @@ extern "C" {
 }
 extern "C" {
     /// Translate from format to number of bytes per pixel. Will return 0 for formats in which the number of bytes per pixel isn't fixed.
+    ///
+    /// For YUV422 and YUYV this function reports the size of the *pixels* (2), not the
+    /// size of their respective structs which contain *two* of those pixels (4 total).
     pub fn oniFormatBytesPerPixel(format: OniPixelFormat) -> c_int;
 }
 extern "C" {
@@ -709,7 +729,7 @@ extern "C" {
     pub fn oniDeviceGetDepthColorSyncEnabled(device: OniDeviceHandle) -> OniBool;
 }
 extern "C" {
-    /// Set property in the device. Use the properties listed in OniTypes.h: ONI_DEVICE_PROPERTY_..., or specific ones supplied by the device.
+    /// Set property in the device. Use the properties listed in OniTypes.h: `ONI_DEVICE_PROPERTY_...`, or specific ones supplied by the device.
     pub fn oniDeviceSetProperty(device: OniDeviceHandle,
                                 propertyId: c_int,
                                 data: *const c_void,
@@ -717,7 +737,7 @@ extern "C" {
                                 -> OniStatus;
 }
 extern "C" {
-    /// Get property in the device. Use the properties listed in OniTypes.h: ONI_DEVICE_PROPERTY_..., or specific ones supplied by the device.
+    /// Get property in the device. Use the properties listed in OniTypes.h: `ONI_DEVICE_PROPERTY_...`, or specific ones supplied by the device.
     pub fn oniDeviceGetProperty(device: OniDeviceHandle,
                                 propertyId: c_int,
                                 data: *mut c_void,
@@ -725,7 +745,7 @@ extern "C" {
                                 -> OniStatus;
 }
 extern "C" {
-    /// Check if the property is supported by the device. Use the properties listed in OniTypes.h: ONI_DEVICE_PROPERTY_..., or specific ones supplied by the device.
+    /// Check if the property is supported by the device. Use the properties listed in OniTypes.h: `ONI_DEVICE_PROPERTY_...`, or specific ones supplied by the device.
     pub fn oniDeviceIsPropertySupported(device: OniDeviceHandle,
                                         propertyId: c_int)
                                         -> OniBool;
@@ -745,6 +765,7 @@ extern "C" {
                                        -> OniBool;
 }
 extern "C" {
+    /// Check if an image registration mode (video stream alignment) is supported.
     pub fn oniDeviceIsImageRegistrationModeSupported(device: OniDeviceHandle,
                                                      mode: OniImageRegistrationMode)
                                                      -> OniBool;
@@ -773,7 +794,7 @@ extern "C" {
     pub fn oniStreamStop(stream: OniStreamHandle);
 }
 extern "C" {
-    /// Get the next frame from the stream. This function is blocking until there is a new frame from the stream. For timeout, use oniWaitForStreams() first
+    /// Get the next frame from the stream. This function is blocking until there is a new frame from the stream. For timeout, use oniWaitForAnyStream() first
     pub fn oniStreamReadFrame(stream: OniStreamHandle, pFrame: *mut *mut OniFrame) -> OniStatus;
 }
 extern "C" {
@@ -790,7 +811,7 @@ extern "C" {
                                                handle: OniCallbackHandle);
 }
 extern "C" {
-    /// Set property in the stream. Use the properties listed in OniTypes.h: ONI_STREAM_PROPERTY_..., or specific ones supplied by the device for its streams.
+    /// Set property in the stream. Use the properties listed in OniTypes.h: `ONI_STREAM_PROPERTY_...`, or specific ones supplied by the device for its streams.
     pub fn oniStreamSetProperty(stream: OniStreamHandle,
                                 propertyId: c_int,
                                 data: *const c_void,
@@ -798,7 +819,7 @@ extern "C" {
                                 -> OniStatus;
 }
 extern "C" {
-    /// Get property in the stream. Use the properties listed in OniTypes.h: ONI_STREAM_PROPERTY_..., or specific ones supplied by the device for its streams.
+    /// Get property in the stream. Use the properties listed in OniTypes.h: `ONI_STREAM_PROPERTY_...`, or specific ones supplied by the device for its streams.
     pub fn oniStreamGetProperty(stream: OniStreamHandle,
                                 propertyId: c_int,
                                 data: *mut c_void,
@@ -806,7 +827,7 @@ extern "C" {
                                 -> OniStatus;
 }
 extern "C" {
-    /// Check if the property is supported the stream. Use the properties listed in OniTypes.h: ONI_STREAM_PROPERTY_..., or specific ones supplied by the device for its streams.
+    /// Check if the property is supported the stream. Use the properties listed in OniTypes.h: `ONI_STREAM_PROPERTY_...`, or specific ones supplied by the device for its streams.
     pub fn oniStreamIsPropertySupported(stream: OniStreamHandle,
                                         propertyId: c_int)
                                         -> OniBool;
@@ -834,8 +855,7 @@ extern "C" {
                                              -> OniStatus;
 }
 extern "C" {
-    ///
-    /// ** Mark another user of the frame. */
+    /// Mark another user of the frame.
     pub fn oniFrameAddRef(pFrame: *mut OniFrame);
 }
 extern "C" {
@@ -844,10 +864,11 @@ extern "C" {
 }
 extern "C" {
     /// Creates a recorder that records to a file.
-    /// @param	[in]	fileName	The name of the file that will contain the recording.
-    /// @param	[out]	pRecorder	Points to the handle to the newly created recorder.
-    /// @retval ONI_STATUS_OK Upon successful completion.
-    /// @retval ONI_STATUS_ERROR Upon any kind of failure.
+    ///
+    /// @param	[in]	`fileName`	The name of the file that will contain the recording.<br>
+    /// @param	[out]	`pRecorder`	Points to the handle to the newly created recorder.<br>
+    /// @retval `ONI_STATUS_OK` Upon successful completion.<br>
+    /// @retval `ONI_STATUS_ERROR` Upon any kind of failure.
     pub fn oniCreateRecorder(fileName: *const c_char,
                              pRecorder: *mut OniRecorderHandle)
                              -> OniStatus;
@@ -855,12 +876,13 @@ extern "C" {
 extern "C" {
     /// Attaches a stream to a recorder. The amount of attached streams is virtually
     /// infinite. You cannot attach a stream after you have started a recording, if
-    /// you do: an error will be returned by oniRecorderAttachStream.
-    /// @param	[in]	recorder				The handle to the recorder.
-    /// @param	[in]	stream					The handle to the stream.
-    /// @param	[in]	allowLossyCompression	Allows/denies lossy compression
-    /// @retval ONI_STATUS_OK Upon successful completion.
-    /// @retval ONI_STATUS_ERROR Upon any kind of failure.
+    /// you do: an error will be returned by `oniRecorderAttachStream`.
+    ///
+    /// @param	[in]	`recorder`				The handle to the recorder.<br>
+    /// @param	[in]	`stream`					The handle to the stream.<br>
+    /// @param	[in]	`allowLossyCompression`	Allows/denies lossy compression<br>
+    /// @retval `ONI_STATUS_OK` Upon successful completion.<br>
+    /// @retval `ONI_STATUS_ERROR` Upon any kind of failure.
     pub fn oniRecorderAttachStream(recorder: OniRecorderHandle,
                                    stream: OniStreamHandle,
                                    allowLossyCompression: OniBool)
@@ -868,25 +890,28 @@ extern "C" {
 }
 extern "C" {
     /// Starts recording. There must be at least one stream attached to the recorder,
-    /// if not: oniRecorderStart will return an error.
-    /// @param[in] recorder The handle to the recorder.
-    /// @retval ONI_STATUS_OK Upon successful completion.
-    /// @retval ONI_STATUS_ERROR Upon any kind of failure.
+    /// if not: `oniRecorderStart` will return an error.
+    ///
+    /// @param[in] `recorder` The handle to the recorder.<br>
+    /// @retval `ONI_STATUS_OK` Upon successful completion.<br>
+    /// @retval `ONI_STATUS_ERROR` Upon any kind of failure.
     pub fn oniRecorderStart(recorder: OniRecorderHandle) -> OniStatus;
 }
 extern "C" {
-    /// Stops recording. You can resume recording via oniRecorderStart.
-    /// @param[in] recorder The handle to the recorder.
-    /// @retval ONI_STATUS_OK Upon successful completion.
+    /// Stops recording. You can resume recording via `oniRecorderStart`.
+    ///
+    /// @param[in] `recorder` The handle to the recorder.<br>
+    /// @retval ONI_STATUS_OK Upon successful completion.<br>
     /// @retval ONI_STATUS_ERROR Upon any kind of failure.
     pub fn oniRecorderStop(recorder: OniRecorderHandle);
 }
 extern "C" {
     /// Stops recording if needed, and destroys a recorder.
-    /// @param	[in,out]	recorder	The handle to the recorder, the handle will be
-    /// invalidated (nullified) when the function returns.
-    /// @retval ONI_STATUS_OK Upon successful completion.
-    /// @retval ONI_STATUS_ERROR Upon any kind of failure.
+    ///
+    /// @param	[in,out]	`recorder`	The handle to the recorder, the handle will be
+    /// invalidated (nullified) when the function returns.<br>
+    /// @retval `ONI_STATUS_OK` Upon successful completion.<br>
+    /// @retval `ONI_STATUS_ERROR` Upon any kind of failure.
     pub fn oniRecorderDestroy(pRecorder: *mut OniRecorderHandle) -> OniStatus;
 }
 extern "C" {
@@ -922,20 +947,20 @@ extern "C" {
 extern "C" {
     /// Change the log output folder
     ///
-    /// @param const char * strOutputFolder	[in]	path to the desirebale folder
+    /// @param `const char * strOutputFolder`	[in]	path to the desirebale folder
     ///
-    /// @retval ONI_STATUS_OK Upon successful completion.
-    /// @retval ONI_STATUS_ERROR Upon any kind of failure.
+    /// @retval `ONI_STATUS_OK` Upon successful completion.<br>
+    /// @retval `ONI_STATUS_ERROR` Upon any kind of failure.
     pub fn oniSetLogOutputFolder(strOutputFolder: *const c_char) -> OniStatus;
 }
 extern "C" {
     /// Get the current log file name
     ///
-    /// @param	char * strFileName	[out]	hold the returned file name
-    /// @param	int nBufferSize	[in]	size of strFileName
+    /// @param	`char * strFileName`	[out]	hold the returned file name
+    /// @param	`int nBufferSize`	[in]	size of strFileName
     ///
-    /// @retval ONI_STATUS_OK Upon successful completion.
-    /// @retval ONI_STATUS_ERROR Upon any kind of failure.
+    /// @retval `ONI_STATUS_OK` Upon successful completion.<br>
+    /// @retval `ONI_STATUS_ERROR` Upon any kind of failure.
     pub fn oniGetLogFileName(strFileName: *mut c_char,
                              nBufferSize: c_int)
                              -> OniStatus;
@@ -943,28 +968,28 @@ extern "C" {
 extern "C" {
     /// Set the Minimum severity for log produce
     ///
-    /// @param	const char * strMask	[in]	Name of the logger
+    /// @param	`const char * strMask`	[in]	Name of the logger
     ///
-    /// @retval ONI_STATUS_OK Upon successful completion.
-    /// @retval ONI_STATUS_ERROR Upon any kind of failure.
+    /// @retval `ONI_STATUS_OK` Upon successful completion.<br>
+    /// @retval `ONI_STATUS_ERROR` Upon any kind of failure.
     pub fn oniSetLogMinSeverity(nMinSeverity: c_int) -> OniStatus;
 }
 extern "C" {
     /// Configures if log entries will be printed to console.
     ///
-    /// @param	OniBool bConsoleOutput	[in]	TRUE to print log entries to console, FALSE otherwise.
+    /// @param	`OniBool bConsoleOutput`	[in]	TRUE to print log entries to console, FALSE otherwise.
     ///
-    /// @retval ONI_STATUS_OK Upon successful completion.
-    /// @retval ONI_STATUS_ERROR Upon any kind of failure.
+    /// @retval `ONI_STATUS_OK` Upon successful completion.<br>
+    /// @retval `ONI_STATUS_ERROR` Upon any kind of failure.
     pub fn oniSetLogConsoleOutput(bConsoleOutput: OniBool) -> OniStatus;
 }
 extern "C" {
     /// Configures if log entries will be printed to a log file.
     ///
-    /// @param	OniBool bFileOutput	[in]	TRUE to print log entries to the file, FALSE otherwise.
+    /// @param	`OniBool bFileOutput`	[in]	TRUE to print log entries to the file, FALSE otherwise.
     ///
-    /// @retval ONI_STATUS_OK Upon successful completion.
-    /// @retval ONI_STATUS_ERROR Upon any kind of failure.
+    /// @retval `ONI_STATUS_OK` Upon successful completion.<br>
+    /// @retval `ONI_STATUS_ERROR` Upon any kind of failure.
     pub fn oniSetLogFileOutput(bFileOutput: OniBool) -> OniStatus;
 }
 
