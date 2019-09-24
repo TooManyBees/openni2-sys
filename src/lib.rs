@@ -498,7 +498,7 @@ pub type OniGrayscale16Pixel = u16;
 pub type OniGrayscale8Pixel = u8;
 /// Holds the value of a single color image pixel in 24-bit RGB format.
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub struct OniRGB888Pixel {
     pub r: u8,
     pub g: u8,
@@ -535,7 +535,7 @@ fn bindgen_test_layout_OniRGB888Pixel() {
 /// The first pixel has the values `y1`, `u`, `v`.
 /// The second pixel has the values `y2`, `u`, `v`.
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub struct OniYUV422DoublePixel {
     /// First chrominance value for two pixels, stored as blue luminance difference signal.
     pub u: u8,
