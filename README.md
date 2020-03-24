@@ -19,19 +19,6 @@ When building on Windows, the build script checks the presence of the env vars
 (A Windows OpenNI2 installation should also have the `OPENNI2_REDIST(64)` env
 var set, but it's not the location needed to correctly link.)
 
-# Runtime considerations
-
-For OSX, add `OPENNI2_REDIST(64)` (the location of `libOpenNI2.dylib`)
-to your `DYLD_LIBRARY_PATH` env var.
-
-For Linux, add `OPENNI2_REDIST(64)` (the location of `libOpenNI2.so`)
-to your `LD_LIBRARY_PATH` env var.
-
-For Windows, add `OPENNI2_REDIST(64)` to your `PATH`.
-
-Otherwise to avoid using shared locations, copy `OpenNI2.dll`,
-`libOpenNI2.dylib`, or `libOpenNI2.so` to the executable's directory.
-
 If your installation names the library something different than `openni2`,
 the name passed to the linker (i.e. `-lopenni2`), can be overriden with the
 `OPENNI2_LIBNAME` environment variable:
@@ -45,6 +32,18 @@ $ OPENNI2_REDIST64=/lib/libOpenNI2 OPENNI2_LIBNAME=OpenNI2 cargo build
     Finished dev [unoptimized + debuginfo] target(s) in 0.96s
 ```
 
+# Runtime considerations
+
+For OSX, add `OPENNI2_REDIST(64)` (the location of `libOpenNI2.dylib`)
+to your `DYLD_LIBRARY_PATH` env var.
+
+For Linux, add `OPENNI2_REDIST(64)` (the location of `libOpenNI2.so`)
+to your `LD_LIBRARY_PATH` env var.
+
+For Windows, add `OPENNI2_REDIST(64)` to your `PATH`.
+
+Otherwise to avoid using shared locations, copy `OpenNI2.dll`,
+`libOpenNI2.dylib`, or `libOpenNI2.so` to the executable's directory.
 
 # LICENSE
 
