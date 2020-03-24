@@ -32,6 +32,20 @@ For Windows, add `OPENNI2_REDIST(64)` to your `PATH`.
 Otherwise to avoid using shared locations, copy `OpenNI2.dll`,
 `libOpenNI2.dylib`, or `libOpenNI2.so` to the executable's directory.
 
+If your installation names the library something different than `openni2`,
+the name passed to the linker (i.e. `-lopenni2`), can be overriden with the
+`OPENNI2_LIBNAME` environment variable:
+
+```
+$ OPENNI2_REDIST64=/lib/libOpenNI2 cargo build
+error: linking with `cc` failed: exit code: 1
+  = note: /usr/bin/ld: cannot find -lopeni2
+          collect2: error: ld returned 1 exit status
+$ OPENNI2_REDIST64=/lib/libOpenNI2 OPENNI2_LIBNAME=OpenNI2 cargo build
+    Finished dev [unoptimized + debuginfo] target(s) in 0.96s
+```
+
+
 # LICENSE
 
 These bindings are distributed under the MIT license, which I don't exactly
