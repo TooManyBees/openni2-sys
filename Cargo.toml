@@ -3,7 +3,6 @@ name = "openni2-sys"
 version = "1.1.0"
 authors = ["Jesse Bees <jesse@toomanybees.com>"]
 build = "build.rs"
-links = "openni2"
 exclude = ["vendor/**/*"]
 description = "Rust bindings for OpenNI2"
 repository = "https://github.com/TooManyBees/openni2-sys"
