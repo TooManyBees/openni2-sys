@@ -1,6 +1,6 @@
 [package]
 name = "openni2-sys"
-version = "1.1.0"
+version = "1.1.1"
 authors = ["Jesse Bees <jesse@toomanybees.com>"]
 build = "build.rs"
 exclude = ["vendor/**/*"]
